@@ -51,9 +51,18 @@ public class MainActivity extends AppCompatActivity {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
+
         webView.getSettings().setJavaScriptEnabled(true);
 
+
         webView.loadUrl(startURL);
+        CookieManager.getInstance().setAcceptCookie(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+        }else {
+            CookieSyncManager.getInstance().startSync();
+        }
+
     }
 
     @Override
@@ -78,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                CookieManager.getInstance().flush();
+            } else {
+                CookieSyncManager.getInstance().sync();
+            }
             if (progressDialog != null) {
                 progressDialog.dismiss();
                 progressDialog = null;
