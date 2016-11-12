@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">mONO</string>
+    <string name="dialog_loading_title">Loading</string>
+    <string name="dialog_loading_message">Please wait for a few seconds</string>
 </resources>
