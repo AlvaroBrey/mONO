@@ -11,7 +11,7 @@ public class OnoURL {
 
     public enum OnoPage {
 
-        CLIENT_AREA("clientes");
+        CLIENT_AREA("clientes"), LOGIN("area-cliente/login");
 
         protected String value;
 
@@ -19,6 +19,10 @@ public class OnoURL {
             this.value = val;
         }
 
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
 

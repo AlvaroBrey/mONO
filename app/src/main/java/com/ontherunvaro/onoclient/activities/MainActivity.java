@@ -29,6 +29,7 @@ import com.ontherunvaro.onoclient.util.ConfigUtil;
 import com.ontherunvaro.onoclient.util.ConfigUtil.ConfigKey;
 import com.ontherunvaro.onoclient.util.JavascriptFunctions;
 import com.ontherunvaro.onoclient.util.OnoURL;
+import com.ontherunvaro.onoclient.util.OnoURL.OnoPage;
 import com.ontherunvaro.onoclient.util.WebViewUtils;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupWebView() {
-        final String startURL = OnoURL.builder().withPage(OnoURL.OnoPage.CLIENT_AREA).toString();
+        final String startURL = OnoURL.builder().withPage(OnoPage.CLIENT_AREA).toString();
 
         webView = (WebView) findViewById(R.id.mainWebView);
 
@@ -86,6 +87,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // options menu
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        String url = webView.getUrl();
+        if (url == null || !url.contains(OnoPage.LOGIN.toString())) {
+            menu.removeItem(R.id.menuitem_paste_password);
+        }
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -108,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    // helper classes
     class MONOWebClient extends WebViewClient {
 
         @Override
@@ -122,11 +133,15 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(WebView view, String url) {
+            //sync cookies
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 CookieManager.getInstance().flush();
             } else {
                 CookieSyncManager.getInstance().sync();
             }
+            //check menu items
+            invalidateOptionsMenu();
+            //hide loading dialog
             if (progressDialog != null) {
                 progressDialog.dismiss();
                 progressDialog = null;
