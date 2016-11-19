@@ -2,6 +2,7 @@ package com.ontherunvaro.onoclient.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
@@ -113,6 +114,10 @@ public class MainActivity extends AppCompatActivity {
                 js += String.format(JavascriptFunctions.INSERT_PASSWORD, ConfigUtil.getProp(ConfigKey.PASSWORD));
                 WebViewUtils.loadJavaScript(webView, js);
                 Log.d(TAG, "onOptionsItemSelected: credentials inserted");
+                return true;
+            case R.id.menuitem_about:
+                Intent i = new Intent(this, AboutActivity.class);
+                startActivity(i);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

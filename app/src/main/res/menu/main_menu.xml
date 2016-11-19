@@ -5,4 +5,8 @@
         android:id="@+id/menuitem_paste_password"
         android:title="@string/menu_title_insert_credentials"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/menuitem_about"
+        android:title="@string/menu_title_about"
+        app:showAsAction="never" />
 </menu>
