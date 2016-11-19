@@ -6,20 +6,30 @@ import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.ontherunvaro.onoclient.R;
+import com.ontherunvaro.onoclient.util.ConfigUtil;
+import com.ontherunvaro.onoclient.util.ConfigUtil.ConfigKey;
+import com.ontherunvaro.onoclient.util.JavascriptFunctions;
 import com.ontherunvaro.onoclient.util.OnoURL;
+import com.ontherunvaro.onoclient.util.WebViewUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: loading URL " + startURL);
         webView.setWebViewClient(new MONOWebClient());
+        webView.setWebChromeClient(new WebChromeClient());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -59,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
         CookieManager.getInstance().setAcceptCookie(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
-        }else {
+            CookieManager.setAcceptFileSchemeCookies(true);
+        } else {
             CookieSyncManager.getInstance().startSync();
         }
 
@@ -73,6 +85,29 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuitem_paste_password:
+                Toast.makeText(this, R.string.toast_inserting_credentials, Toast.LENGTH_SHORT).show();
+                String js = String.format(JavascriptFunctions.INSERT_USERNAME, ConfigUtil.getProp(ConfigKey.USERNAME));
+                js += String.format(JavascriptFunctions.INSERT_PASSWORD, ConfigUtil.getProp(ConfigKey.PASSWORD));
+                WebViewUtils.loadJavaScript(webView, js);
+                Log.d(TAG, "onOptionsItemSelected: credentials inserted");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     class MONOWebClient extends WebViewClient {
 
@@ -116,7 +151,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return !url.contains(OnoURL.getBaseUrl());
+            return !(url.contains(OnoURL.getBaseUrl()) || url.contains("javascript"));
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            String url = request.getUrl().toString();
+            return !(url.contains(OnoURL.getBaseUrl()) || url.contains("javascript"));
         }
     }
 

@@ -2,4 +2,6 @@
     <string name="app_name">mONO</string>
     <string name="dialog_loading_title">Loading</string>
     <string name="dialog_loading_message">Please wait for a few seconds</string>
+    <string name="menu_title_insert_credentials">Insert credentials</string>
+    <string name="toast_inserting_credentials">Trying to insert credentials…</string>
 </resources>
