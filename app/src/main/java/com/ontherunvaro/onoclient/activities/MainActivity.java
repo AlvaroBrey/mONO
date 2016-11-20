@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -48,13 +49,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.context = this;
-        setupWebView();
+        if (savedInstanceState == null)
+            setupWebView();
+        else
+            webView.restoreState(savedInstanceState);
     }
 
     private void setupWebView() {
         final String startURL = OnoURL.builder().withPage(OnoPage.CLIENT_AREA).toString();
 
-        webView = (WebView) findViewById(R.id.mainWebView);
+        webView = (WebView) findViewById(R.id.main_webview);
 
         Log.d(TAG, "onCreate: loading URL " + startURL);
         webView.setWebViewClient(new MONOWebClient());
@@ -117,12 +121,37 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.menuitem_about:
                 Intent i = new Intent(this, AboutActivity.class);
-                startActivity(i);
+                startActivityForResult(i, 0);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        webView.saveState(outState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        webView.saveState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+        webView.restoreState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        webView.restoreState(savedInstanceState);
+    }
+
 
     // helper classes
     class MONOWebClient extends WebViewClient {
