@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
@@ -49,16 +51,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.context = this;
-        if (savedInstanceState == null)
+
+        webView = (WebView) findViewById(R.id.main_webview);
+
+
+        if (savedInstanceState == null) {
+            showLoading();
             setupWebView();
-        else
+        } else {
             webView.restoreState(savedInstanceState);
+        }
     }
 
     private void setupWebView() {
         final String startURL = OnoURL.builder().withPage(OnoPage.CLIENT_AREA).toString();
-
-        webView = (WebView) findViewById(R.id.main_webview);
 
         Log.d(TAG, "onCreate: loading URL " + startURL);
         webView.setWebViewClient(new MONOWebClient());
@@ -153,15 +159,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void showLoading() {
+        if (progressDialog == null || !progressDialog.isShowing()) {
+            webView.setVisibility(View.INVISIBLE);
+            progressDialog = ProgressDialog.show(context, getString(R.string.dialog_loading_title), getString(R.string.dialog_loading_message));
+            progressDialog.setCancelable(false);
+        }
+    }
+
+    private void hideLoading() {
+        if (progressDialog != null) {
+            webView.setVisibility(View.VISIBLE);
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+    }
+
     // helper classes
     class MONOWebClient extends WebViewClient {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            if (progressDialog == null) {
-                progressDialog = ProgressDialog.show(context, getString(R.string.dialog_loading_title), getString(R.string.dialog_loading_message));
-                progressDialog.setCancelable(false);
-            }
+            showLoading();
             super.onPageStarted(view, url, favicon);
         }
 
@@ -176,10 +195,7 @@ public class MainActivity extends AppCompatActivity {
             //check menu items
             invalidateOptionsMenu();
             //hide loading dialog
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-                progressDialog = null;
-            }
+            hideLoading();
         }
 
         @Override
