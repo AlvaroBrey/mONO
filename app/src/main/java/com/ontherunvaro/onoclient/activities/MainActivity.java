@@ -36,13 +36,16 @@ import com.ontherunvaro.onoclient.util.OnoURL;
 import com.ontherunvaro.onoclient.util.OnoURL.OnoPage;
 import com.ontherunvaro.onoclient.util.WebViewUtils;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.main_webview)
+    WebView webView;
 
-    private WebView webView;
 
     private ProgressDialog progressDialog;
-    private Context context;
 
     private final static String TAG = "MainActivity";
 
@@ -50,9 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.context = this;
-
-        webView = (WebView) findViewById(R.id.main_webview);
+        ButterKnife.bind(this);
 
 
         if (savedInstanceState == null) {
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     private void showLoading() {
         if (progressDialog == null || !progressDialog.isShowing()) {
             webView.setVisibility(View.INVISIBLE);
-            progressDialog = ProgressDialog.show(context, getString(R.string.dialog_loading_title), getString(R.string.dialog_loading_message));
+            progressDialog = ProgressDialog.show(this, getString(R.string.dialog_loading_title), getString(R.string.dialog_loading_message));
             progressDialog.setCancelable(false);
         }
     }

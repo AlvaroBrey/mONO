@@ -9,19 +9,27 @@ import android.widget.TextView;
 
 import com.ontherunvaro.onoclient.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AboutActivity extends AppCompatActivity {
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.about_icon_credits)
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         toolbar.setTitle(R.string.title_activity_about);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView tv = (TextView) findViewById(R.id.about_icon);
-        tv.setText(Html.fromHtml(getString(R.string.about_icon_html)));
+        textView.setText(Html.fromHtml(getString(R.string.about_icon_html)));
     }
 
     @Override
