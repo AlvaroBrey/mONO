@@ -9,4 +9,13 @@
     <string name="text_about">mONO is free and should by no means be marketed or used for any commercial purpose.</string>
     <string name="about_credits">Credits</string>
     <string name="about_icon_html"><![CDATA[Icons made by <a href=\"http://www.flaticon.com/authors/freepik\" title=\"Freepik\">Freepik</a> from <a href=\"http://www.flaticon.com\" title=\"Flaticon\">www.flaticon.com</a> is licensed by <a href=\"http://creativecommons.org/licenses/by/3.0/\" title=\"Creative Commons BY 3.0\" target=\"_blank\">CC 3.0 BY</a>]]></string>
+
+    <!-- Login -->
+    <string name="title_activity_login">Sign in</string>
+    <string name="action_login">Login</string>
+    <string name="hint_login_email">Email…</string>
+    <string name="hint_login_password">Password…</string>
+    <string name="text_login_title">Login</string>
+
+
 </resources>

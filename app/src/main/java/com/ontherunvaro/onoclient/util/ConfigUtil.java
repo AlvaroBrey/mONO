@@ -31,7 +31,7 @@ public class ConfigUtil {
     }
 
     public enum ConfigKey {
-        USERNAME("user.name"), PASSWORD("user.password");
+        PLACEHOLDER("place.holder");
 
         final String key;
 

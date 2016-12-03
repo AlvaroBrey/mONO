@@ -25,11 +25,8 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.ontherunvaro.onoclient.R;
-import com.ontherunvaro.onoclient.util.ConfigUtil;
-import com.ontherunvaro.onoclient.util.ConfigUtil.ConfigKey;
 import com.ontherunvaro.onoclient.util.JavascriptFunctions;
 import com.ontherunvaro.onoclient.util.OnoURL;
 import com.ontherunvaro.onoclient.util.OnoURL.OnoPage;
@@ -44,7 +41,13 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
     @BindView(R.id.main_webview)
     WebView webView;
+
     private ProgressDialog progressDialog;
+
+    public final static String EXTRA_USERNAME = "main_extra_username";
+    public final static String EXTRA_PASSWORD = "main_extra_password";
+
+    private boolean insertCredentials = false;
 
     @Override
     public void onBackPressed() {
@@ -55,33 +58,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // options menu
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        String url = webView.getUrl();
-        if (url == null || !url.contains(OnoPage.LOGIN.toString())) {
-            menu.removeItem(R.id.menuitem_paste_password);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menuitem_paste_password:
-                Toast.makeText(this, R.string.toast_inserting_credentials, Toast.LENGTH_SHORT).show();
-                String js = String.format(JavascriptFunctions.INSERT_USERNAME, ConfigUtil.getProp(ConfigKey.USERNAME));
-                js += String.format(JavascriptFunctions.INSERT_PASSWORD, ConfigUtil.getProp(ConfigKey.PASSWORD));
-                WebViewUtils.loadJavaScript(webView, js);
-                Log.d(TAG, "onOptionsItemSelected: credentials inserted");
-                return true;
             case R.id.menuitem_about:
                 Intent i = new Intent(this, AboutActivity.class);
                 startActivityForResult(i, 0);
@@ -103,6 +83,24 @@ public class MainActivity extends AppCompatActivity {
         webView.restoreState(savedInstanceState);
     }
 
+    private void handleIntent() {
+        final String user = getIntent().getStringExtra(EXTRA_USERNAME);
+        final String pass = getIntent().getStringExtra(EXTRA_PASSWORD);
+
+        if (user != null && pass != null) {
+            final String loginAction = OnoURL.builder().withPage(OnoPage.LOGIN).toString() + "/";
+            insertCredentials = true;
+            setupWebView();
+            webView.loadUrl(loginAction);
+        } else {
+            Log.e(TAG, "handleIntent: pasword or user is null. Pass=" + pass + ", user=" + user);
+            Intent k = new Intent(this, LoginActivity.class);
+            startActivity(k);
+            finish();
+        }
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,8 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (savedInstanceState == null) {
-            showLoading();
-            setupWebView();
+            handleIntent();
         } else {
             webView.restoreState(savedInstanceState);
         }
@@ -132,9 +129,8 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("deprecation")
     private void setupWebView() {
-        final String startURL = OnoURL.builder().withPage(OnoPage.CLIENT_AREA).toString();
 
-        Log.d(TAG, "onCreate: loading URL " + startURL);
+        Log.d(TAG, "Setting up webview...");
         webView.setWebViewClient(new MONOWebClient());
         webView.setWebChromeClient(new WebChromeClient());
 
@@ -142,11 +138,8 @@ public class MainActivity extends AppCompatActivity {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
-
         webView.getSettings().setJavaScriptEnabled(true);
 
-
-        webView.loadUrl(startURL);
         CookieManager.getInstance().setAcceptCookie(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -186,6 +179,17 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(WebView view, String url) {
+
+            if (insertCredentials) {
+                Log.d(TAG, "onPageFinished: Inserting credentials...");
+                final String user = getIntent().getStringExtra(EXTRA_USERNAME);
+                final String pass = getIntent().getStringExtra(EXTRA_PASSWORD);
+                String js = String.format(JavascriptFunctions.INSERT_PASSWORD, pass);
+                js += String.format(JavascriptFunctions.INSERT_USERNAME, user);
+                WebViewUtils.loadJavaScript(webView, js);
+                insertCredentials = false;
+            }
+
             //sync cookies
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 CookieManager.getInstance().flush();
