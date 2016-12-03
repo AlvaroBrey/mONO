@@ -6,6 +6,6 @@ package com.ontherunvaro.onoclient.util;
 
 public class JavascriptFunctions {
 
-    public static String INSERT_USERNAME = "document.getElementsByClassName('input_customer_area_login_username_field')[0].value='%s';";
-    public static String INSERT_PASSWORD = "document.getElementsByClassName('input_customer_area_login_password_field')[0].value='%s';";
+    public static final String INSERT_USERNAME = "document.getElementsByClassName('input_customer_area_login_username_field')[0].value='%s';";
+    public static final String INSERT_PASSWORD = "document.getElementsByClassName('input_customer_area_login_password_field')[0].value='%s';";
 }

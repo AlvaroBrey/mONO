@@ -9,11 +9,19 @@ public class OnoURL {
     private static final String BASE_URL = "ono.es";
     private static final String SEPARATOR = "/";
 
+    public static String getBaseUrl() {
+        return BASE_URL;
+    }
+
+    public static OnoURLBuilder builder() {
+        return new OnoURLBuilder();
+    }
+
     public enum OnoPage {
 
         CLIENT_AREA("clientes"), LOGIN("area-cliente/login");
 
-        protected String value;
+        final String value;
 
         OnoPage(String val) {
             this.value = val;
@@ -25,19 +33,10 @@ public class OnoURL {
         }
     }
 
-
-    public static String getBaseUrl() {
-        return BASE_URL;
-    }
-
-    public static OnoURLBuilder builder() {
-        return new OnoURLBuilder();
-    }
-
-
+    @SuppressWarnings("unused")
     public static class OnoURLBuilder {
 
-        private StringBuilder current;
+        private final StringBuilder current;
 
         private OnoURLBuilder() {
             current = new StringBuilder("https://" + BASE_URL);
@@ -53,10 +52,6 @@ public class OnoURL {
             current.append(SEPARATOR);
             current.append(value);
             return this;
-        }
-
-        public String build() {
-            return current.toString();
         }
 
         @Override

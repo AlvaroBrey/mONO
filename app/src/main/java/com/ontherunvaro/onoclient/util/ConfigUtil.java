@@ -13,20 +13,9 @@ import java.util.Properties;
 public class ConfigUtil {
 
 
-    private static String TAG = "ConfigUtil";
-
-    public enum ConfigKey {
-        USERNAME("user.name"), PASSWORD("user.password");
-
-        String key;
-
-        ConfigKey(String key) {
-            this.key = key;
-        }
-    }
-
+    private static final String TAG = "ConfigUtil";
     private static final String PROP_FILE = "config.properties";
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     public static void load(Context ctx) {
         try {
@@ -39,6 +28,16 @@ public class ConfigUtil {
 
     public static String getProp(ConfigKey key) {
         return properties.getProperty(key.key);
+    }
+
+    public enum ConfigKey {
+        USERNAME("user.name"), PASSWORD("user.password");
+
+        final String key;
+
+        ConfigKey(String key) {
+            this.key = key;
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 package com.ontherunvaro.onoclient.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,56 +38,13 @@ import com.ontherunvaro.onoclient.util.WebViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@SuppressLint("SetJavaScriptEnabled")
 public class MainActivity extends AppCompatActivity {
 
+    private final static String TAG = "MainActivity";
     @BindView(R.id.main_webview)
     WebView webView;
-
-
     private ProgressDialog progressDialog;
-
-    private final static String TAG = "MainActivity";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-
-
-        if (savedInstanceState == null) {
-            showLoading();
-            setupWebView();
-        } else {
-            webView.restoreState(savedInstanceState);
-        }
-    }
-
-    private void setupWebView() {
-        final String startURL = OnoURL.builder().withPage(OnoPage.CLIENT_AREA).toString();
-
-        Log.d(TAG, "onCreate: loading URL " + startURL);
-        webView.setWebViewClient(new MONOWebClient());
-        webView.setWebChromeClient(new WebChromeClient());
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
-
-
-        webView.getSettings().setJavaScriptEnabled(true);
-
-
-        webView.loadUrl(startURL);
-        CookieManager.getInstance().setAcceptCookie(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
-            CookieManager.setAcceptFileSchemeCookies(true);
-        } else {
-            CookieSyncManager.getInstance().startSync();
-        }
-
-    }
 
     @Override
     public void onBackPressed() {
@@ -142,15 +98,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        webView.saveState(outState);
-    }
-
-    @Override
     public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onRestoreInstanceState(savedInstanceState, persistentState);
         webView.restoreState(savedInstanceState);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+
+        if (savedInstanceState == null) {
+            showLoading();
+            setupWebView();
+        } else {
+            webView.restoreState(savedInstanceState);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        webView.saveState(outState);
     }
 
     @Override
@@ -159,6 +130,33 @@ public class MainActivity extends AppCompatActivity {
         webView.restoreState(savedInstanceState);
     }
 
+    @SuppressWarnings("deprecation")
+    private void setupWebView() {
+        final String startURL = OnoURL.builder().withPage(OnoPage.CLIENT_AREA).toString();
+
+        Log.d(TAG, "onCreate: loading URL " + startURL);
+        webView.setWebViewClient(new MONOWebClient());
+        webView.setWebChromeClient(new WebChromeClient());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+
+
+        webView.getSettings().setJavaScriptEnabled(true);
+
+
+        webView.loadUrl(startURL);
+        CookieManager.getInstance().setAcceptCookie(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+            CookieManager.setAcceptFileSchemeCookies(true);
+        } else {
+            CookieSyncManager.getInstance().startSync();
+        }
+
+    }
 
     private void showLoading() {
         if (progressDialog == null || !progressDialog.isShowing()) {
@@ -177,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // helper classes
+    @SuppressWarnings("deprecation")
     class MONOWebClient extends WebViewClient {
 
         @Override
@@ -193,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 CookieSyncManager.getInstance().sync();
             }
+
             //check menu items
             invalidateOptionsMenu();
             //hide loading dialog
