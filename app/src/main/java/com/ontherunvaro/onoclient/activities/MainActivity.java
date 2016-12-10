@@ -11,8 +11,6 @@ import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -38,16 +36,13 @@ import butterknife.ButterKnife;
 @SuppressLint("SetJavaScriptEnabled")
 public class MainActivity extends AppCompatActivity {
 
+    public final static String EXTRA_USERNAME = "main_extra_username";
+    public final static String EXTRA_PASSWORD = "main_extra_password";
     private final static String TAG = "MainActivity";
     @BindView(R.id.main_webview)
     WebView webView;
-
     private ProgressDialog progressDialog;
-
-    public final static String EXTRA_USERNAME = "main_extra_username";
-    public final static String EXTRA_PASSWORD = "main_extra_password";
-
-    private boolean insertCredentials = false;
+    private boolean doLogin = false;
 
     @Override
     public void onBackPressed() {
@@ -83,24 +78,6 @@ public class MainActivity extends AppCompatActivity {
         webView.restoreState(savedInstanceState);
     }
 
-    private void handleIntent() {
-        final String user = getIntent().getStringExtra(EXTRA_USERNAME);
-        final String pass = getIntent().getStringExtra(EXTRA_PASSWORD);
-
-        if (user != null && pass != null) {
-            final String loginAction = OnoURL.builder().withPage(OnoPage.LOGIN).toString() + "/";
-            insertCredentials = true;
-            setupWebView();
-            webView.loadUrl(loginAction);
-        } else {
-            Log.e(TAG, "handleIntent: pasword or user is null. Pass=" + pass + ", user=" + user);
-            Intent k = new Intent(this, LoginActivity.class);
-            startActivity(k);
-            finish();
-        }
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +102,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         webView.restoreState(savedInstanceState);
+    }
+
+    private void handleIntent() {
+        final String user = getIntent().getStringExtra(EXTRA_USERNAME);
+        final String pass = getIntent().getStringExtra(EXTRA_PASSWORD);
+
+        if (user != null && pass != null) {
+            final String loginAction = OnoURL.builder().withPage(OnoPage.LOGIN).toString() + "/";
+            doLogin = true;
+            setupWebView();
+            webView.loadUrl(loginAction);
+        } else {
+            Log.e(TAG, "handleIntent: pasword or user is null. Pass=" + pass + ", user=" + user);
+            Intent k = new Intent(this, LoginActivity.class);
+            startActivity(k);
+            finish();
+        }
+
     }
 
     @SuppressWarnings("deprecation")
@@ -180,14 +175,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
 
-            if (insertCredentials) {
+            if (doLogin) {
                 Log.d(TAG, "onPageFinished: Inserting credentials...");
                 final String user = getIntent().getStringExtra(EXTRA_USERNAME);
                 final String pass = getIntent().getStringExtra(EXTRA_PASSWORD);
                 String js = String.format(JavascriptFunctions.INSERT_PASSWORD, pass);
                 js += String.format(JavascriptFunctions.INSERT_USERNAME, user);
+                js += JavascriptFunctions.PRESS_LOGIN_BUTTON;
                 WebViewUtils.loadJavaScript(webView, js);
-                insertCredentials = false;
+                doLogin = false;
             }
 
             //sync cookies
