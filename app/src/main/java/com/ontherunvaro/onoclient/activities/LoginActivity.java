@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         final String password = passwordText.getText().toString().trim();
 
         // TODO: 3/12/16 secure storage!
-        SharedPreferences prefs = getSharedPreferences(PrefConstants.Files.MAIN_PREFS, MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(PrefConstants.Files.CREDENTIALS, MODE_PRIVATE);
         final SharedPreferences.Editor edit = prefs.edit();
         if (rememberCheckbox.isChecked()) {
             edit.putString(PrefConstants.Keys.USERNAME, mail);
@@ -57,16 +57,26 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
 
-        SharedPreferences prefs = getSharedPreferences(PrefConstants.Files.MAIN_PREFS, MODE_PRIVATE);
-        if (prefs.contains(PrefConstants.Keys.USERNAME)) {
-            mailText.setText(prefs.getString(PrefConstants.Keys.USERNAME, ""));
-        }
-        if (prefs.contains(PrefConstants.Keys.PASSWORD)) {
-            passwordText.setText(new String(Base64.decode(prefs.getString(PrefConstants.Keys.PASSWORD, ""), Base64.NO_PADDING)));
-            rememberCheckbox.setChecked(true);
+        SharedPreferences p = getSharedPreferences(PrefConstants.Files.MAIN_PREFS, MODE_PRIVATE);
+        // if user is logged in just forward him to the main activity
+        if (p.getBoolean(PrefConstants.Keys.LOGGED_IN, false)) {
+            Log.d(TAG, "onCreate: User appears to be logged in. Forwarding to main activity.");
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
+            finish();
+        } else {
+            setContentView(R.layout.activity_login);
+            ButterKnife.bind(this);
+
+            SharedPreferences prefs = getSharedPreferences(PrefConstants.Files.CREDENTIALS, MODE_PRIVATE);
+            if (prefs.contains(PrefConstants.Keys.USERNAME)) {
+                mailText.setText(prefs.getString(PrefConstants.Keys.USERNAME, ""));
+            }
+            if (prefs.contains(PrefConstants.Keys.PASSWORD)) {
+                passwordText.setText(new String(Base64.decode(prefs.getString(PrefConstants.Keys.PASSWORD, ""), Base64.NO_PADDING)));
+                rememberCheckbox.setChecked(true);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.ontherunvaro.onoclient.activities;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +30,7 @@ import com.ontherunvaro.onoclient.R;
 import com.ontherunvaro.onoclient.util.JavascriptFunctions;
 import com.ontherunvaro.onoclient.util.OnoURL;
 import com.ontherunvaro.onoclient.util.OnoURL.OnoPage;
+import com.ontherunvaro.onoclient.util.PrefConstants;
 import com.ontherunvaro.onoclient.util.WebViewUtils;
 
 import butterknife.BindView;
@@ -108,16 +111,13 @@ public class MainActivity extends AppCompatActivity {
         final String user = getIntent().getStringExtra(EXTRA_USERNAME);
         final String pass = getIntent().getStringExtra(EXTRA_PASSWORD);
 
-        if (user != null && pass != null) {
+        setupWebView();
+        if (!TextUtils.isEmpty(user) && !TextUtils.isEmpty(pass)) {
             final String loginAction = OnoURL.builder().withPage(OnoPage.LOGIN).toString() + "/";
             doLogin = true;
-            setupWebView();
             webView.loadUrl(loginAction);
         } else {
-            Log.e(TAG, "handleIntent: pasword or user is null. Pass=" + pass + ", user=" + user);
-            Intent k = new Intent(this, LoginActivity.class);
-            startActivity(k);
-            finish();
+            webView.loadUrl(OnoURL.builder().withPage(OnoPage.CLIENT_AREA).toString() + "/");
         }
 
     }
@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
 
+            SharedPreferences prefs = getSharedPreferences(PrefConstants.Files.MAIN_PREFS, MODE_PRIVATE);
             if (doLogin) {
                 Log.d(TAG, "onPageFinished: Inserting credentials...");
                 final String user = getIntent().getStringExtra(EXTRA_USERNAME);
@@ -184,7 +185,16 @@ public class MainActivity extends AppCompatActivity {
                 js += JavascriptFunctions.PRESS_LOGIN_BUTTON;
                 WebViewUtils.loadJavaScript(webView, js);
                 doLogin = false;
+                prefs.edit().putBoolean(PrefConstants.Keys.LOGGED_IN, true).apply();
+            } else if (prefs.getBoolean(PrefConstants.Keys.LOGGED_IN, false) && webView.getUrl().contains(OnoPage.LOGIN.toString())) {
+                //client area returns to login page without us asking for it. Session has expired.
+                Log.d(TAG, "onPageFinished: Login needed. Forwarding to LoginActivity");
+                prefs.edit().putBoolean(PrefConstants.Keys.LOGGED_IN, false).apply();
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                MainActivity.this.startActivity(i);
+                MainActivity.this.finish();
             }
+
 
             //sync cookies
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -193,8 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 CookieSyncManager.getInstance().sync();
             }
 
-            //check menu items
-            invalidateOptionsMenu();
             //hide loading dialog
             hideLoading();
         }
