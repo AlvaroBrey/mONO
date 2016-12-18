@@ -13,10 +13,11 @@
     <!-- Login -->
     <string name="title_activity_login">Sign in</string>
     <string name="action_login">Login</string>
-    <string name="hint_login_email">Email…</string>
-    <string name="hint_login_password">Password…</string>
+    <string name="hint_login_email">Email</string>
+    <string name="hint_login_password">Password</string>
     <string name="text_login_title">Login</string>
     <string name="remember_credentials">Remember password</string>
+    <string name="error_field_required">This field is required</string>
 
 
 </resources>

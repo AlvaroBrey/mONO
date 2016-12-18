@@ -3,7 +3,9 @@ package com.ontherunvaro.onoclient.activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.CheckBox;
@@ -20,6 +22,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private static final String TAG = "LoginActivity";
+    @BindView(R.id.input_layout_password)
+    TextInputLayout inputLayoutPassword;
+    @BindView(R.id.input_layout_email)
+    TextInputLayout inputLayoutEmail;
     @BindView(R.id.edittext_login_email)
     EditText mailText;
     @BindView(R.id.edittext_login_password)
@@ -29,6 +35,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.button_login)
     public void login() {
+
+        if (!validateFields())
+            return;
+
         Log.d(TAG, "login: Trying to login...");
         final String mail = mailText.getText().toString().trim();
         final String password = passwordText.getText().toString().trim();
@@ -78,5 +88,23 @@ public class LoginActivity extends AppCompatActivity {
                 rememberCheckbox.setChecked(true);
             }
         }
+    }
+
+    private boolean validateFields() {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(mailText.getText()) || TextUtils.isEmpty(mailText.getText().toString().trim())) {
+            inputLayoutEmail.setError(getString(R.string.error_field_required));
+            valid = false;
+        } else {
+            inputLayoutEmail.setErrorEnabled(false);
+        }
+        if (TextUtils.isEmpty(passwordText.getText()) || TextUtils.isEmpty(passwordText.getText().toString().trim())) {
+            inputLayoutPassword.setError(getString(R.string.error_field_required));
+            valid = false;
+        } else {
+            inputLayoutPassword.setErrorEnabled(false);
+        }
+        return valid;
     }
 }
