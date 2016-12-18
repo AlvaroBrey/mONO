@@ -47,19 +47,40 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/edittext_login_email"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:ems="10"
         android:hint="@string/hint_login_password"
         android:inputType="textPassword"/>
 
-    <Button
-        android:id="@+id/button_login"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/edittext_login_password"
         android:layout_alignEnd="@id/edittext_login_password"
-        android:layout_below="@+id/edittext_login_password"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/action_login"/>
+        android:layout_alignLeft="@id/edittext_login_password"
+        android:layout_alignRight="@id/edittext_login_password"
+        android:layout_alignStart="@id/edittext_login_password"
+        android:layout_below="@id/edittext_login_password"
+        >
+
+        <Button
+            android:id="@+id/button_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/action_login"/>
+
+        <CheckBox
+            android:id="@+id/checkbox_remember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:text="@string/remember_credentials"
+            />
+    </RelativeLayout>
+
 </RelativeLayout>
