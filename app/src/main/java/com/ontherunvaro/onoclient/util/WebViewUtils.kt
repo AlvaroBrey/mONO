@@ -17,13 +17,11 @@ private val TAG = "WebViewUtils"
  * @param jsCode the JavaScript to load
  */
 fun WebView.loadJavaScript(jsCode: String) {
-    val jscode = "(function(){" +
-            jsCode +
-            "})()"
-    Log.d(TAG, "loadJavaScript: loading JS: " + jscode)
+    val wrappedCode = "(function(){$jsCode})()"
+    Log.d(TAG, "loadJavaScript: loading JS: $wrappedCode")
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-        evaluateJavascript(jscode, null)
+        evaluateJavascript(wrappedCode, null)
     } else {
-        loadUrl("javascript:" + jscode)
+        loadUrl("javascript: $wrappedCode")
     }
 }
