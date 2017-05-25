@@ -22,7 +22,7 @@ import com.ontherunvaro.onoclient.util.JavascriptFunctions
 import com.ontherunvaro.onoclient.util.OnoURL
 import com.ontherunvaro.onoclient.util.OnoURL.OnoPage
 import com.ontherunvaro.onoclient.util.PrefConstants
-import com.ontherunvaro.onoclient.util.WebViewUtils
+import com.ontherunvaro.onoclient.util.loadJavaScript
 import kotlinx.android.synthetic.main.activity_main.*
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                 var js = String.format(JavascriptFunctions.INSERT_PASSWORD, pass)
                 js += String.format(JavascriptFunctions.INSERT_USERNAME, user)
                 js += JavascriptFunctions.PRESS_LOGIN_BUTTON
-                WebViewUtils.loadJavaScript(main_webview, js)
+                main_webview.loadJavaScript(js)
                 doLogin = false
                 prefs.edit().putBoolean(PrefConstants.Keys.LOGGED_IN, true).apply()
             } else if (prefs.getBoolean(PrefConstants.Keys.LOGGED_IN, false) && main_webview.url.contains(OnoPage.LOGIN.toString())) {
