@@ -3,16 +3,10 @@ package com.ontherunvaro.onoclient.activities
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.text.Html
 import android.text.Spanned
 import android.view.MenuItem
-import android.widget.TextView
-
 import com.ontherunvaro.onoclient.R
-
-import butterknife.BindView
-import butterknife.ButterKnife
 import kotlinx.android.synthetic.main.activity_about.*
 import kotlinx.android.synthetic.main.content_about.*
 
