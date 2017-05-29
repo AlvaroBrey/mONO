@@ -199,13 +199,13 @@ class MainActivity : AppCompatActivity() {
 
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            return !(url.contains(OnoURL.getBaseUrl()) || url.contains("javascript"))
+            return !(url.contains(OnoURL.BASE_URL) || url.contains("javascript"))
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
             val url = request.url.toString()
-            return !(url.contains(OnoURL.getBaseUrl()) || url.contains("javascript"))
+            return !(url.contains(OnoURL.BASE_URL) || url.contains("javascript"))
         }
     }
 
