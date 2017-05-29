@@ -158,10 +158,11 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "onPageFinished: Inserting credentials...")
                 val user = intent.getStringExtra(EXTRA_USERNAME)
                 val pass = intent.getStringExtra(EXTRA_PASSWORD)
-                var js = String.format(JavascriptFunctions.INSERT_PASSWORD, pass)
-                js += String.format(JavascriptFunctions.INSERT_USERNAME, user)
-                js += JavascriptFunctions.PRESS_LOGIN_BUTTON
-                main_webview.loadJavaScript(js)
+                main_webview.loadJavaScript(
+                        Pair(JavascriptFunctions.INSERT_PASSWORD, arrayOf(pass)),
+                        Pair(JavascriptFunctions.INSERT_USERNAME, arrayOf(user)),
+                        Pair(JavascriptFunctions.PRESS_LOGIN_BUTTON, null)
+                )
                 doLogin = false
                 prefs.edit().putBoolean(PrefConstants.Keys.LOGGED_IN, true).apply()
             } else if (prefs.getBoolean(PrefConstants.Keys.LOGGED_IN, false) && main_webview.url.contains(OnoPage.LOGIN.toString())) {
