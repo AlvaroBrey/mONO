@@ -1,0 +1,7 @@
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter  "build-tools-25.0.2"
+test:
+  override:
+    - ./gradlew assembleDebug
+    - cp -r app/build/outputs $CIRCLE_ARTIFACTS
