@@ -26,5 +26,20 @@ enum class JavascriptFunctions(val function: String, val argn: Int) {
 
     INSERT_USERNAME("document.getElementsByClassName('input_customer_area_login_username_field')[0].value='%s';", 1),
     INSERT_PASSWORD("document.getElementsByClassName('input_customer_area_login_password_field')[0].value='%s';", 1),
-    PRESS_LOGIN_BUTTON("document.getElementById('loginBtn_button').click();", 0)
+    PRESS_LOGIN_BUTTON("document.getElementById('loginBtn_button').click();", 0);
+
+    private val TAG = "JavascriptFunctions"
+
+
+    fun format(args: Array<String>?): String {
+        if (this.argn > 0) {
+            when {
+                args == null || args.isEmpty() -> throw IllegalArgumentException("Args expected for JS function")
+                else -> return this.function.format(*args)
+            }
+        }
+        return this.function
+    }
 }
+
+

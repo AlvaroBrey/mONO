@@ -29,21 +29,19 @@ import android.webkit.WebView
 
 private val TAG = "WebViewUtils"
 
-/**
- * Loads the JavaScript code contained in [functions] into this WebView.
- *
- * @param functions [Pair]s of [JavascriptFunctions] and the [String]s that serve as arguments for them.
- */
-fun WebView.loadJavaScript(vararg functions: Pair<JavascriptFunctions, Array<String>?>) {
 
-    val inner = functions.fold("", {
+/**
+ * Loads the JavaScript code contained in [additional] into this WebView.
+ *
+ * @param firstArg a [Pair] of  a [JavascriptFunctions] and the [String]s that serve as arguments for it
+ * @param additional [Pair]s of [JavascriptFunctions] and the [String]s that serve as arguments for them (optional)
+ */
+fun WebView.loadJavaScript(firstArg: Pair<JavascriptFunctions, Array<String>?>, vararg additional: Pair<JavascriptFunctions, Array<String>?>) {
+
+    var inner = firstArg.first.format(firstArg.second)
+    inner = additional.fold(inner, {
         str, (function, args) ->
-        if (function.argn > 0) {
-            when {
-                args == null || args.isEmpty() -> throw IllegalArgumentException("Args expected for JS function")
-                else -> str + function.function.format(*args)
-            }
-        } else str + function.function
+        str + function.format(args)
     })
 
     val wrappedCode = "(function(){$inner})()"
