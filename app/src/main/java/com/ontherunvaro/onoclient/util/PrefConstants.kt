@@ -16,23 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0>.
  */
 
-package com.ontherunvaro.onoclient.util;
+package com.ontherunvaro.onoclient.util
 
-/**
- * Created by varo on 3/12/16.
- */
+class PrefConstants {
 
-public class PrefConstants {
-
-    public class Files {
-        public static final String CREDENTIALS = "main_credentials";
-        public static final String MAIN_PREFS = "main_config";
+    object Files {
+        val CREDENTIALS = "main_credentials"
+        val MAIN_PREFS = "main_config"
     }
 
-    public class Keys {
-        public static final String USERNAME = "user.name";
-        public static final String PASSWORD = "user.password";
-        public static final String LOGGED_IN = "app.isloggedin";
+    object Keys {
+        val USERNAME = "user.name"
+        val PASSWORD = "user.password"
+        val LOGGED_IN = "app.isloggedin"
     }
 
 }
