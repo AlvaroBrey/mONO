@@ -24,8 +24,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Base64
-import android.util.Log
 import com.ontherunvaro.onoclient.R
+import com.ontherunvaro.onoclient.util.LogUtil
 import com.ontherunvaro.onoclient.util.PrefConstants
 import kotlinx.android.synthetic.main.activity_login.*
 
@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
         if (!validateFields())
             return
 
-        Log.d(TAG, "login: Trying to login...")
+        LogUtil.d(TAG, "login: Trying to login...")
         val mail = edittext_login_email.text.toString().trim()
         val password = edittext_login_password.text.toString().trim()
 
@@ -56,7 +56,7 @@ class LoginActivity : AppCompatActivity() {
         val i = Intent(this, MainActivity::class.java)
         i.putExtra(MainActivity.EXTRA_USERNAME, mail)
         i.putExtra(MainActivity.EXTRA_PASSWORD, password)
-        Log.d(TAG, "login: Starting main activity")
+        LogUtil.d(TAG, "login: Starting main activity")
         startActivity(i)
         finish()
     }
@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
         val p = getSharedPreferences(PrefConstants.Files.MAIN_PREFS, Context.MODE_PRIVATE)
         // if user is logged in just forward them to the main activity, don't even set contentview
         if (p.getBoolean(PrefConstants.Keys.LOGGED_IN, false)) {
-            Log.d(TAG, "onCreate: User appears to be logged in. Forwarding to main activity.")
+            LogUtil.d(TAG, "onCreate: User appears to be logged in. Forwarding to main activity.")
             val i = Intent(this, MainActivity::class.java)
             startActivity(i)
             finish()

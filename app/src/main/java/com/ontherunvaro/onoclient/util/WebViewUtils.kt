@@ -19,7 +19,6 @@
 package com.ontherunvaro.onoclient.util
 
 import android.os.Build
-import android.util.Log
 import android.webkit.WebView
 
 /**
@@ -46,7 +45,7 @@ fun WebView.loadJavaScript(firstArg: Pair<JavascriptFunctions, Array<String>?>, 
 
     val wrappedCode = "(function(){$inner})()"
 
-    Log.d(TAG, "loadJavaScript: loading JS: $wrappedCode")
+    LogUtil.d(TAG, "loadJavaScript: loading JS: $wrappedCode")
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
         evaluateJavascript(wrappedCode, null)
     } else {

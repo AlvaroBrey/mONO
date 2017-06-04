@@ -19,13 +19,13 @@
 package com.ontherunvaro.onoclient
 
 import android.app.Application
-import android.util.Log
+import com.ontherunvaro.onoclient.util.LogUtil
 
 class MONOApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "onCreate: mONO started")
+        LogUtil.d(TAG, "onCreate: mONO started")
     }
 
     companion object {

@@ -30,17 +30,13 @@ import android.os.PersistableBundle
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.*
 import com.ontherunvaro.onoclient.R
-import com.ontherunvaro.onoclient.util.JavascriptFunctions
-import com.ontherunvaro.onoclient.util.OnoURL
+import com.ontherunvaro.onoclient.util.*
 import com.ontherunvaro.onoclient.util.OnoURL.OnoPage
-import com.ontherunvaro.onoclient.util.PrefConstants
-import com.ontherunvaro.onoclient.util.loadJavaScript
 import kotlinx.android.synthetic.main.activity_main.*
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -124,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupWebView() {
 
-        Log.d(TAG, "Setting up webview...")
+        LogUtil.d(TAG, "Setting up webview...")
         main_webview.setWebViewClient(MONOWebClient())
         main_webview.setWebChromeClient(WebChromeClient())
 
@@ -173,7 +169,7 @@ class MainActivity : AppCompatActivity() {
 
             val prefs = getSharedPreferences(PrefConstants.Files.MAIN_PREFS, Context.MODE_PRIVATE)
             if (doLogin) {
-                Log.d(TAG, "onPageFinished: Inserting credentials...")
+                LogUtil.d(TAG, "onPageFinished: Inserting credentials...")
                 val user = intent.getStringExtra(EXTRA_USERNAME)
                 val pass = intent.getStringExtra(EXTRA_PASSWORD)
                 main_webview.loadJavaScript(
@@ -185,7 +181,7 @@ class MainActivity : AppCompatActivity() {
                 prefs.edit().putBoolean(PrefConstants.Keys.LOGGED_IN, true).apply()
             } else if (prefs.getBoolean(PrefConstants.Keys.LOGGED_IN, false) && main_webview.url.contains(OnoPage.LOGIN.toString())) {
                 //client area returns to login page without us asking for it. Session has expired.
-                Log.d(TAG, "onPageFinished: Login needed. Forwarding to LoginActivity")
+                LogUtil.d(TAG, "onPageFinished: Login needed. Forwarding to LoginActivity")
                 prefs.edit().putBoolean(PrefConstants.Keys.LOGGED_IN, false).apply()
                 val i = Intent(this@MainActivity, LoginActivity::class.java)
                 this@MainActivity.startActivity(i)
@@ -205,15 +201,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-            Log.e(TAG, "onReceivedError: " + error.toString())
+            LogUtil.e(TAG, "onReceivedError: " + error.toString())
         }
 
         override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
-            Log.e(TAG, "onReceivedHttpError: " + errorResponse.toString())
+            LogUtil.e(TAG, "onReceivedHttpError: " + errorResponse.toString())
         }
 
         override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
-            Log.e(TAG, "onReceivedSslError: " + error.toString())
+            LogUtil.e(TAG, "onReceivedSslError: " + error.toString())
         }
 
 
