@@ -10,7 +10,8 @@ It was created because the official app sucks and won't even let some users log 
 
 ## Have some screenshots
 
-  | <img src="assets/screenshots/login.png" width="300px"/>  | <img src="assets/screenshots/consumo.png" width="300px"/>
+  | <img src="assets/screenshots/login.png" width="300px"/>  | <img src="assets/screenshots/consumo.png" width="300px"/> |
+  | --- | --- |
 
 ## Contributing
 
