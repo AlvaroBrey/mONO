@@ -21,13 +21,7 @@ package com.ontherunvaro.onoclient.util
 import android.os.Build
 import android.webkit.WebView
 
-/**
- * Created by varo on 5/25/17.
- */
-
-
 private val TAG = "WebViewUtils"
-
 
 /**
  * Loads the JavaScript code contained in [additional] into this WebView.

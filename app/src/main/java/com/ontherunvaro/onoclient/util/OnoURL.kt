@@ -18,10 +18,6 @@
 
 package com.ontherunvaro.onoclient.util
 
-/**
- * Created by varo on 5/11/16.
- */
-
 object OnoURL {
 
     val BASE_URL = "ono.es"

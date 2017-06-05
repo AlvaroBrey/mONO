@@ -18,10 +18,6 @@
 
 package com.ontherunvaro.onoclient.util
 
-/**
- * Created by varo on 13/11/16.
- */
-
 enum class JavascriptFunctions(val function: String, val argn: Int) {
 
     INSERT_USERNAME("document.getElementsByClassName('input_customer_area_login_username_field')[0].value='%s';", 1),
