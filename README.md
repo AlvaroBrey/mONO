@@ -1,4 +1,6 @@
-<center><img src="assets/web_logo.png" width="300px"/></center>
+<p align="center">
+  <img src="assets/web_logo.png" width="200px"/>
+</p>
 
 # mONO [![CircleCI](https://circleci.com/gh/ontherunvaro/mONO/tree/master.svg?style=shield)](https://circleci.com/gh/ontherunvaro/mONO/tree/master)
 
